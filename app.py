@@ -4,21 +4,17 @@ import shap
 import numpy as np
 import google.generativeai as genai
 
-# Configure Gemini
 genai.configure(api_key="AIzaSyAoj6Z8jzJ71wb1Qis5F7hU-nvKHjBDlv0")  # Replace with your Gemini API key
 
-# Load ML model and scaler
 model = joblib.load("linear_svm_model.pkl")
 scaler = joblib.load("scaler.pkl")
 X_train_sample = joblib.load("X_train_sample.pkl")
 feature_names = ['Age', 'Sex', 'BMI', 'HighBP', 'PhysActivity', 'Smoker', 'GenHlth']
 
-# Setup Gemini chat
 if "chat" not in st.session_state:
     gemini_model = genai.GenerativeModel("gemini-1.5-flash")
     st.session_state.chat = gemini_model.start_chat(history=[])
 
-# Setup memory for prediction results
 if "prediction" not in st.session_state:
     st.session_state.prediction = None
     st.session_state.explanation = None
@@ -32,8 +28,6 @@ def get_age_range(age_bin):
     }
     return age_ranges.get(age_bin, "Unknown")
 
-
-# SHAP explanation
 def explain_prediction(model, patient_scaled, original_input):
     explainer = shap.LinearExplainer(model, X_train_sample)
     shap_values = explainer.shap_values(patient_scaled)
@@ -61,8 +55,6 @@ Do NOT include any greetings or patient names in your response.
     return st.session_state.chat.send_message(prompt).text
 
 
-
-# App UI
 st.set_page_config(page_title="Diabetes AI Assistant", layout="centered")
 st.title("Diabetes Risk Predictor")
 
@@ -79,14 +71,13 @@ with st.form("patient_form"):
 
     submitted = st.form_submit_button("🔍 Predict")
 
-# On form submission
+
 if submitted:
     patient_input = [age, sex, bmi, highbp, phys, smoker, genhlth]
     scaled_input = scaler.transform([patient_input])
     prediction = model.predict(scaled_input)[0]
     explanation = explain_prediction(model, scaled_input, patient_input)
 
-    # Store results in session state
     st.session_state.prediction = prediction
     st.session_state.explanation = explanation
 
@@ -94,13 +85,11 @@ if submitted:
         gemini_response = get_initial_gemini_response(prediction, explanation, patient_input)
         st.session_state.gemini_response = gemini_response
 
-# Display stored prediction and explanation
 if st.session_state.prediction is not None:
     st.success(f"✅ Prediction: The patient is **{'Diabetic' if st.session_state.prediction == 1 else 'Not Diabetic'}**.")
     st.write("### Explanation")
     st.markdown(st.session_state.gemini_response)
 
-    # Follow-up Q&A
     st.write("### Follow-up Questions")
     followup_question = st.text_input("Your question:")
     if followup_question:

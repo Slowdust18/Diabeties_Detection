@@ -3,20 +3,16 @@ import shap
 import numpy as np
 import google.generativeai as genai
 
-# 🔐 Setup Gemini
-genai.configure(api_key="AIzaSyAoj6Z8jzJ71wb1Qis5F7hU-nvKHjBDlv0")  # Replace with your Gemini API key
+genai.configure(api_key="AIzaSyAoj6Z8jzJ71wb1Qis5F7hU-nvKHjBDlv0")
 
-# Load saved model components
 model = joblib.load('linear_svm_model.pkl')
 scaler = joblib.load('scaler.pkl')
 X_train_sample = joblib.load('X_train_sample.pkl')
 feature_names = ['Age', 'Sex', 'BMI', 'HighBP', 'PhysActivity', 'Smoker', 'GenHlth']
 
-# Gemini model with context retention
 chat_model = genai.GenerativeModel("gemini-1.5-flash")
 chat = chat_model.start_chat(history=[])
 
-# SHAP explanation function
 def explain_prediction(model, patient_scaled, feature_names, original_input):
     explainer = shap.LinearExplainer(model, X_train_sample)
     shap_values = explainer.shap_values(patient_scaled)
@@ -26,7 +22,6 @@ def explain_prediction(model, patient_scaled, feature_names, original_input):
         explanation.append(f"Feature '{feature_names[i]}' with value {original_input[i]} {direction} the diabetes risk by {abs(val):.3f}.")
     return explanation
 
-# Initial Gemini response based on model prediction
 def get_initial_gemini_response(prediction, explanation_list):
     prompt = f"""
 You are a health assistant AI. A model predicted that a patient is {'diabetic' if prediction == 1 else 'not diabetic'}.
@@ -39,12 +34,11 @@ Please explain the diagnosis in simple terms like a doctor talking to a patient.
     response = chat.send_message(prompt)
     return response.text
 
-# Follow-up question response
+
 def get_followup_response(question):
     response = chat.send_message(question)
     return response.text
 
-# Main chatbot loop
 def diabetes_chatbot():
     print("🤖 Hello! I'm DiaBot, your diabetes prediction assistant.")
     print("Please enter patient details:\n")
@@ -69,7 +63,6 @@ def diabetes_chatbot():
     print("💬 Gemini says:\n")
     print(gemini_response)
 
-    # Follow-up loop
     while True:
         follow_up = input("\n💬 Ask a follow-up question (or type 'exit' to end): ")
         if follow_up.lower() == 'exit':
