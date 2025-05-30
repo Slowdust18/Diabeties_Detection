@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Health Chatbot</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f0f4f8; }
+        .chat-box { max-width: 800px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .message { padding: 10px; margin: 10px 0; border-radius: 10px; }
+        .bot { background-color: #e0f7fa; }
+        .user { background-color: #e1bee7; text-align: right; }
+        h2, h4 { color: #00796b; }
+        input[type="text"] { padding: 8px; font-size: 16px; }
+        button { padding: 8px 16px; font-size: 16px; margin-top: 10px; background-color: #00796b; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background-color: #004d40; }
+    </style>
+</head>
+<body>
+<div class="chat-box">
+    <h2>🧠 Health Prediction Chat</h2>
+
+    <h4>Step 1: Submit Health Info</h4>
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+
+    {% if prediction %}
+        <h4>Prediction Result:</h4>
+        <div class="message bot"><strong>{{ prediction }}</strong></div>
+    {% endif %}
+
+    {% if explanation %}
+        <h4>SHAP Explanation:</h4>
+        {% for line in explanation %}
+            <div class="message bot">{{ line }}</div>
+        {% endfor %}
+    {% endif %}
+
+    {% if response %}
+        <h4>Initial Bot Response:</h4>
+        <div class="message bot">{{ response }}</div>
+    {% endif %}
+
+    {% if prediction %}
+        <h4>Ask a Follow-up Question:</h4>
+        <form method="POST">
+            {% csrf_token %}
+            <input type="text" name="user_message" placeholder="Ask something..." style="width: 80%;" required>
+            <button type="submit">Send</button>
+        </form>
+    {% endif %}
+
+    {% if bot_followup %}
+        <h4>Bot Follow-up Response:</h4>
+        <div class="message bot">{{ bot_followup }}</div>
+    {% endif %}
+</div>
+</body>
+</html>

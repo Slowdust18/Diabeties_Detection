@@ -1,0 +1,19 @@
+<form method="POST">
+    {% csrf_token %}
+    <label>BMI: <input type="number" name="BMI" step="0.1" required></label><br>
+    <label>Age: <input type="number" name="Age" required></label><br>
+    <label>HighBP: <input type="number" name="HighBP" required></label><br>
+    <label>HighChol: <input type="number" name="HighChol" required></label><br>
+    <label>HeartDiseaseorAttack: <input type="number" name="HeartDiseaseorAttack" required></label><br>
+    <label>Stroke: <input type="number" name="Stroke" required></label><br>
+    <label>Smoker: <input type="number" name="Smoker" required></label><br>
+    <label>PhysActivity: <input type="number" name="PhysActivity" required></label><br>
+    <label>DiffWalk: <input type="number" name="DiffWalk" required></label><br>
+    <label>MentHlth: <input type="number" name="MentHlth" required></label><br>
+    <label>PhysHlth: <input type="number" name="PhysHlth" required></label><br>
+    <label>GenHlth: <input type="number" name="GenHlth" required></label><br>
+    <label>Sex: <input type="number" name="Sex" required></label><br>
+    <label>HvyAlcoholConsump: <input type="number" name="HvyAlcoholConsump" required></label><br>
+
+    <input type="submit" value="Predict">
+</form>
