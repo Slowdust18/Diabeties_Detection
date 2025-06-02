@@ -47,8 +47,25 @@ def explain_prediction(patient_features):
     print(class1_values)
     result = []
     for i in range(len(class1_values)):
-        direction = "increased" if  class1_values[i]> 0 else "decreased" if class1_values[i] < 0 else "had no effect on"
-        result.append(f"**{FEATURE_NAMES[i]}** {direction} the likelihood of being diabetic")
+      if class1_values[i] <= 0:
+        continue  # skip negative or neutral contributions
+
+      if FEATURE_NAMES[i] in ["HighBP", "HighChol", "HeartDiseaseorAttack", "Stroke", "Smoker", "PhysActivity", "DiffWalk", "HvyAlcoholConsump"]:
+        if patient_features[i] == 1:
+          result.append(
+            f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "BMI" and patient_features[i] > 30:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "MentHlth" and patient_features[i] > 5:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "PhysHlth" and patient_features[i] > 5:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "GenHlth" and patient_features[i] >= 4:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "Age" and patient_features[i] >= 50:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
+        elif FEATURE_NAMES[i] == "Sex" and patient_features[i] == 1:
+            result.append(f"**{FEATURE_NAMES[i]}** increased the likelihood of being diabetic")
     print("check 5")
     print(result)
     return result
