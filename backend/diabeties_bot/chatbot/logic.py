@@ -1,4 +1,3 @@
-import shap
 import numpy as np
 from joblib import load
 import pandas as pd
@@ -30,12 +29,11 @@ def predict(input_dict):
 
         # Impute and scale
         print("check 2")
-        user_input_scaled = scaler.transform([input_dict])
-        print("Transformed Input:", [user_input_scaled])
+        print("Input:", [input_dict])
         print("check 3")
 
         # Predict and explain
-        prediction = model.predict(user_input_scaled)
+        prediction = model.predict(input_dict)
         print("Prediction:", prediction)
 
         return prediction

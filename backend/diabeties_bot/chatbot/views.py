@@ -19,14 +19,12 @@ def chatbot_view(request):
 
     if request.method == "POST":
         if "user_message" in request.POST:
-            # 🎯 Handle follow-up question
             user_msg = request.POST.get("user_message")
             prediction = request.session.get("prediction", "No prediction found.")
             explanation = request.session.get("explanation", [])
             followup_input = f"Prediction: {prediction}\nExplanation:\n" + "\n".join(explanation) + f"\nFollow-up: {user_msg}"
             bot_followup = talk_to_bot(followup_input, prediction)
         else:
-            # 🩺 Handle main form submission
             form = PatientFeatureForm(request.POST)
             if form.is_valid():
                 try:
@@ -50,12 +48,10 @@ def chatbot_view(request):
                     prediction_label = predict(features)
                     shap_values = explain_prediction(features)
 
-                    if prediction_label[0] is not None and shap_values is not None:
+                    if prediction_label is not None and shap_values is not None:
                         prediction = "The patient is Diabetic or pre-diabetic" if prediction_label == 1 else "Patient is Not Diabetic"
                         explanation = shap_values
                         response = talk_to_bot("The explanation is:\n" + "\n".join(explanation), prediction)
-
-                        # Save for follow-up
                         request.session['prediction'] = prediction
                         request.session['explanation'] = explanation
                     else:
@@ -68,7 +64,6 @@ def chatbot_view(request):
                     explanation = []
 
     else:
-        # Populate existing data if available
         prediction = request.session.get("prediction", None)
         explanation = request.session.get("explanation", [])
 

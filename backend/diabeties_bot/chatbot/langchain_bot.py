@@ -33,9 +33,10 @@ The prediction is : {prediction}
 Only the features contributing toward diabeties are sent not all features are sent if the features are not sent it means they did not contribute towards the patient being diabetic
 SHAP Explanation:
 {explanation}
-
+The rules below are absolute and not to be disobeyed
 Do not refer to patient as with any names just give precise and consise explaination for the issue and the follow up questions.
 Give general health advice nothing too specific do not keep repeating the same things.
+If the patient has no features that cause diabeties and is not diabetic then give general advice dont mention anything else.
 """
 
 prompt = PromptTemplate.from_template(template)
